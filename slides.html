@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>천안시 기업지원정책 | 우측 비주얼형 인터랙티브 슬라이드</title>
+<style>
+:root{
+  --bg:#eef1ea;--paper:#fbfbf6;--panel:#ffffff;--ink:#333936;--muted:#717b76;
+  --green:#184e3c;--green2:#2d6b54;--line:#d9e1d6;--soft:#edf3ea;--beige:#f4ede1;
+  --orange:#c86734;--orange2:#d57b4b;--shadow:0 24px 70px rgba(20,56,41,.12);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:linear-gradient(180deg,#edf1ea 0%,#e4ebe2 100%);color:var(--ink);font-family:'Pretendard','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif}
+button{font:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.app{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:18px;gap:14px}
+.topbar,.bottombar{width:min(1280px,100%);display:flex;justify-content:space-between;align-items:center;gap:12px;color:#5d6b63}
+.identity{font-size:13px;font-weight:800;letter-spacing:.06em}
+.sub{font-size:12px;color:#7a867f}
+.toolbar,.navdots,.actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.toolbar button,.actions button,.navdots button{border:1px solid #c8d5ca;background:#fff;border-radius:12px;padding:8px 12px;color:var(--green);font-weight:700}
+.toolbar button:hover,.actions button:hover,.navdots button:hover{background:var(--soft)}
+.navdots button.active{background:var(--green);color:#fff;border-color:var(--green)}
+.deck{position:relative;width:min(1280px,100%);aspect-ratio:16/9;border:1px solid #d6ddd2;border-radius:18px;overflow:hidden;background:var(--paper);box-shadow:var(--shadow)}
+.slide{position:absolute;inset:0;display:none;padding:32px 34px 28px 34px;background:var(--paper)}
+.slide.active{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:.35;transform:translateY(4px)}to{opacity:1;transform:none}}
+.slide-inner{height:100%;display:flex;flex-direction:column}
+.split{flex:1;display:grid;grid-template-columns:1.18fr .94fr;gap:26px;min-height:0}
+.left,.right{min-height:0}
+.left{display:flex;flex-direction:column;padding:8px 4px 0 2px}
+.right{display:flex;align-items:stretch}
+.eyebrow{font-size:13px;font-weight:900;letter-spacing:.16em;color:var(--orange);margin-bottom:10px}
+h1,h2{margin:0;color:var(--green);letter-spacing:-.04em}
+h1{font-size:48px;line-height:1.18;margin-bottom:12px}
+h2{font-size:32px;line-height:1.25;margin-bottom:10px}
+.lead{font-size:18px;line-height:1.58;color:var(--muted);margin:0 0 20px}
+.mini-note{font-size:13px;color:#87928c}
+.meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;margin-bottom:18px}
+.meta span{background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 13px;font-size:13px;font-weight:700;color:#53705f}
+.summary{margin-top:auto;border-left:4px solid var(--orange);background:var(--beige);padding:14px 16px;border-radius:10px;font-size:15px;line-height:1.55;color:#5c5446}
+.summary strong{color:var(--green)}
+.footer{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:11px;font-size:12px;color:#79867e;margin-top:14px}
+.footer b{color:var(--green)}
+.bullets{display:grid;gap:10px;margin:0 0 10px;padding:0;list-style:none}
+.bullets li{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 14px}
+.bullets .dot{width:10px;height:10px;border-radius:50%;background:var(--orange);margin-top:8px;flex:0 0 auto}
+.bullets p{margin:0;font-size:16px;line-height:1.55;color:#55635c}
+.grid-3,.grid-4,.grid-2{display:grid;gap:12px}
+.grid-3{grid-template-columns:repeat(3,1fr)} .grid-4{grid-template-columns:repeat(4,1fr)} .grid-2{grid-template-columns:repeat(2,1fr)}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
+.card h3{margin:0 0 8px;color:var(--green);font-size:17px}
+.card p{margin:0;font-size:14px;line-height:1.55;color:#5e6a64}
+.card .num{font-size:13px;font-weight:900;color:var(--orange);letter-spacing:.06em}
+.compare-col{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+.compare-col h3{margin:0 0 10px;font-size:18px;color:var(--green)}
+.compare-col ul{margin:0;padding-left:18px;color:#5c6863;line-height:1.6;font-size:15px}
+.process{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:4px}
+.process .step{border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px 12px;position:relative}
+.process .step:after{content:'→';position:absolute;right:-11px;top:50%;transform:translateY(-50%);font-size:26px;color:#bdd0c1}
+.process .step:last-child:after{display:none}
+.step strong{display:block;color:var(--orange);font-size:12px;letter-spacing:.08em;margin-bottom:6px}
+.step span{font-size:15px;color:var(--green);font-weight:700}
+.policy-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}
+.policy-btn{border:1px solid var(--line);background:#fff;border-radius:13px;padding:14px;text-align:left;transition:.2s}
+.policy-btn strong{display:block;color:var(--green);font-size:16px;margin-bottom:4px}
+.policy-btn span{display:block;color:#6b7771;font-size:13px;line-height:1.45}
+.policy-btn.active,.policy-btn[aria-pressed="true"]{border-color:#7ea58e;background:#eef6ef;box-shadow:inset 0 0 0 1px #9cc0a7}
+.policy-detail{border:1px solid #bfd2c2;background:#f3f8f2;border-radius:14px;padding:14px 16px;min-height:116px}
+.policy-detail h3{margin:0 0 8px;font-size:18px;color:var(--green)}
+.policy-detail p{margin:0;font-size:15px;line-height:1.6;color:#596760}
+.kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:2px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+.kpi strong{display:block;color:var(--orange);font-size:13px;letter-spacing:.08em;margin-bottom:8px}
+.kpi b{display:block;color:var(--green);font-size:19px;margin-bottom:6px}
+.kpi span{font-size:14px;color:#60706a;line-height:1.55}
+.quiz{display:grid;gap:10px;margin-top:4px}
+.quiz button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;text-align:left;color:#4f5e57}
+.quiz button.correct{border-color:#7ca88b;background:#edf6ef;color:var(--green);font-weight:800}
+.quiz button.wrong{border-color:#e3b8a4;background:#fcf2ee;color:#8c4d2d}
+.quiz-result{min-height:54px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;font-size:14px;color:#607069}
+.media{flex:1;position:relative;display:flex;flex-direction:column;background:linear-gradient(180deg,#f8faf7 0%,#edf4ec 100%);border:1px solid var(--line);border-radius:18px;overflow:hidden;min-height:100%}
+.media .glass{position:relative;inset:auto;z-index:2;flex:0 0 auto;margin:0 18px 18px;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);border:1px solid rgba(215,225,214,.95);border-radius:16px;padding:14px 16px;box-shadow:0 12px 30px rgba(53,78,63,.08)}
+.media .glass h3{margin:0 0 5px;color:var(--green);font-size:16px}.media .glass p{margin:0;color:#5d6c65;font-size:12.5px;line-height:1.5}
+.badge{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid #dbe4d9;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:800;color:var(--green)}
+.soft-circle,.soft-square,.soft-bar,.soft-dot{position:absolute;opacity:.95}
+.soft-circle{border-radius:50%;background:radial-gradient(circle at 30% 30%, #ffffff 0%, #e5efe5 55%, #d7e7d9 100%)}
+.soft-square{border-radius:22px;background:linear-gradient(180deg,#ffffff 0%,#e8f1e8 100%);border:1px solid rgba(217,226,216,.9)}
+.soft-bar{height:12px;border-radius:999px;background:linear-gradient(90deg,var(--orange) 0%,#ebb08a 100%)}
+.soft-dot{width:10px;height:10px;border-radius:50%;background:var(--orange)}
+.float{animation:float 5.8s ease-in-out infinite}.float2{animation:float 7.6s ease-in-out infinite .5s}.pulse{animation:pulse 3s ease-in-out infinite}.slide-wave{animation:slidewave 10s linear infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+@keyframes slidewave{0%{transform:translateX(-14px)}50%{transform:translateX(14px)}100%{transform:translateX(-14px)}}
+.media svg{position:relative;inset:auto;z-index:1;display:block;width:100%;height:100%;min-height:0;flex:1 1 auto;margin:2px 0 12px;overflow:visible}
+.media-title{position:relative;z-index:3;flex:0 0 auto;padding:18px 20px 4px;left:auto;top:auto}
+.media-title b{display:block;color:var(--green);font-size:21px;letter-spacing:-.03em;margin-top:8px}
+.media-title span{font-size:13px;color:#718078}
+.right .legend{display:grid;grid-template-columns:repeat(2,1fr);gap:5px;margin-top:8px}
+.legend .item{background:#fff;border:1px solid var(--line);border-radius:9px;padding:6px 8px;font-size:11px;color:#607069}
+.legend .item b{display:block;color:var(--green);margin-bottom:2px;font-size:12px}
+@media (max-width:1100px){h1{font-size:40px}h2{font-size:28px}.lead{font-size:16px}.split{grid-template-columns:1.05fr .95fr}}
+@media (max-width:960px){.deck{aspect-ratio:auto;min-height:100vh}.slide{padding:22px}.split{grid-template-columns:1fr;grid-template-rows:auto auto}.right{min-height:520px}.process{grid-template-columns:1fr}.process .step:after{display:none}.grid-3,.grid-4,.grid-2,.policy-grid,.kpi-grid{grid-template-columns:1fr}.topbar,.bottombar{align-items:flex-start;flex-direction:column}}
+@media (prefers-reduced-motion:reduce){.float,.float2,.pulse,.slide-wave,.slide.active{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div>
+      <div class="identity">CHEONAN BUSINESS SUPPORT POLICY</div>
+      <div class="sub">천안시 기업지원정책 · 인터랙티브 학습 슬라이드</div>
+    </div>
+    <div class="toolbar">
+      <button id="prevBtn" type="button">← 이전</button>
+      <button id="nextBtn" type="button">다음 →</button>
+      <button id="fullscreenBtn" type="button">전체화면</button>
+      <button id="printBtn" type="button">인쇄/PDF</button>
+    </div>
+  </div>
+
+  <main class="deck" id="deck">
+    <section class="slide active" data-title="표지">
+      <div class="slide-inner">
+        <div class="split">
+          <div class="left">
+            <div class="eyebrow">01 COVER</div>
+            <h1>천안시 기업지원정책</h1>
+            <p class="lead">천안시가 제공하는 주요 기업지원 제도를 한눈에 이해할 수 있도록 정리한 교육용 슬라이드입니다. 정책 구조는 간단하게, 핵심 메시지는 분명하게 구성했습니다.</p>
+            <div class="meta">
+              <span>대상: 기업지원 정책 입문자</span>
+              <span>형식: 설명형 + 탐색형</span>
+              <span>구성: 6장</span>
+            </div>
+            <div class="grid-3">
+              <div class="card"><div class="num">POINT 1</div><h3>무엇을 지원하나</h3><p>자금, 판로, 기술, 경영 분야를 중심으로 설명합니다.</p></div>
+              <div class="card"><div class="num">POINT 2</div><h3>왜 필요한가</h3><p>기업의 부담 완화와 성장 기반 강화를 목표로 합니다.</p></div>
+              <div class="card"><div class="num">POINT 3</div><h3>어떻게 활용하나</h3><p>기업 상황에 맞게 필요한 지원수단을 선택하는 흐름을 익힙니다.</p></div>
+            </div>
+            <div class="summary"><strong>핵심 요약</strong> · 천안시 기업지원정책은 지역기업의 성장과 경쟁력 강화를 돕는 종합 지원 체계입니다.</div>
+          </div>
+          <div class="right">
+            <div class="media">
+              <div class="media-title"><span class="badge">정책 안내 슬라이드</span><b>지역기업 성장과 혁신</b><span>오른쪽 비주얼 패널</span></div>
+              <div class="soft-circle float" style="width:200px;height:200px;right:34px;top:34px"></div>
+              <div class="soft-circle float2" style="width:140px;height:140px;left:42px;bottom:120px"></div>
+              <div class="soft-square pulse" style="width:180px;height:120px;left:44px;top:110px"></div>
+              <div class="soft-square float" style="width:220px;height:160px;right:46px;bottom:110px"></div>
+              <svg viewBox="0 0 1000 700" aria-hidden="true">
+                <g opacity="0.16">
+                  <rect x="118" y="240" width="78" height="280" rx="12" fill="#7ea58e"/>
+                  <rect x="216" y="178" width="90" height="342" rx="12" fill="#93b9a1"/>
+                  <rect x="327" y="262" width="70" height="258" rx="12" fill="#b7d1c0"/>
+                  <rect x="611" y="154" width="92" height="366" rx="12" fill="#9bbda8"/>
+                  <rect x="724" y="246" width="68" height="274" rx="12" fill="#cbdccf"/>
+                </g>
+                <path d="M180 470 C260 400, 370 410, 455 350 S640 240, 790 170" fill="none" stroke="#c86734" stroke-width="14" stroke-linecap="round" stroke-dasharray="4 22"/>
+                <circle cx="180" cy="470" r="13" fill="#c86734"/>
+                <circle cx="455" cy="350" r="13" fill="#c86734"/>
+                <circle cx="790" cy="170" r="13" fill="#c86734"/>
+              </svg>
+              <div class="glass">
+                <h3>균형형 레이아웃</h3>
+                <p>좌측에는 핵심 내용, 우측에는 장별 분위기에 맞는 시각 자료를 배치해 발표자료처럼 깔끔하게 구성했습니다.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span><b>천안시 기업지원정책</b> · 교육용 소개자료</span><span>1 / 6</span></div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="추진 배경">
+      <div class="slide-inner">
+        <div class="split">
+          <div class="left">
+            <div class="eyebrow">02 BACKGROUND</div>
+            <h2>정책 추진 배경</h2>
+            <p class="lead">기업 경영환경이 빠르게 바뀌면서 지역기업이 현장에서 체감하는 부담도 커지고 있습니다. 천안시는 이런 변화에 대응하기 위해 맞춤형 지원정책을 운영합니다.</p>
+            <ul class="bullets">
+              <li><span class="dot"></span><p><strong>경영 불확실성 확대</strong><br>원가 상승, 자금 부담, 시장 변화로 중소기업의 대응 부담이 증가합니다.</p></li>
+              <li><span class="dot"></span><p><strong>기술 전환 가속</strong><br>디지털화와 기술 고도화에 필요한 투자 수요가 커지고 있습니다.</p></li>
+              <li><span class="dot"></span><p><strong>판로 경쟁 심화</strong><br>온라인·오프라인 시장 모두에서 브랜드 경쟁과 판로 확보가 중요해졌습니다.</p></li>
+              <li><span class="dot"></span><p><strong>지역경제 활성화 필요</strong><br>기업 성장 지원은 일자리 창출과 지역 산업 기반 강화로 이어집니다.</p></li>
+            </ul>
+            <div class="summary"><strong>핵심 요약</strong> · 기업지원정책은 단순한 보조가 아니라, 지역기업이 환경 변화에 대응하도록 돕는 성장 기반 정책입니다.</div>
+          </div>
+          <div class="right">
+            <div class="media">
+              <div class="media-title"><span class="badge">환경 변화</span><b>왜 지원정책이 필요한가</b><span>기업이 마주한 4가지 변화</span></div>
+              <div class="soft-circle float" style="width:160px;height:160px;right:30px;top:26px"></div>
+              <div class="soft-square float2" style="width:240px;height:150px;left:32px;top:115px"></div>
+              <svg viewBox="0 0 1000 700" aria-hidden="true">
+                <g fill="none" stroke="#d5e1d6" stroke-width="4">
+                  <path d="M110 510 H870"/>
+                  <path d="M130 170 V515"/>
+                </g>
+                <g>
+                  <rect x="170" y="350" width="90" height="150" rx="16" fill="#b8d1bf"/>
+                  <rect x="300" y="300" width="90" height="200" rx="16" fill="#93b8a0"/>
+                  <rect x="430" y="248" width="90" height="252" rx="16" fill="#78a48a"/>
+                  <rect x="560" y="214" width="90" height="286" rx="16" fill="#55896d"/>
+                  <rect x="690" y="170" width="90" height="330" rx="16" fill="#386c52"/>
+                </g>
+                <path d="M162 330 C270 310, 334 250, 435 230 S625 182, 760 130" fill="none" stroke="#c86734" stroke-width="14" stroke-linecap="round"/>
+                <g fill="#c86734">
+                  <circle cx="164" cy="330" r="10"/>
+                  <circle cx="435" cy="230" r="10"/>
+                  <circle cx="760" cy="130" r="10"/>
+                </g>
+              </svg>
+              <div class="glass">
+                <h3>정책 필요성 4축</h3>
+                <p>경영 부담, 기술 변화, 판로 경쟁, 지역경제 활성화 필요성이 정책 추진의 배경입니다.</p>
+                <div class="legend">
+                  <div class="item"><b>자금</b> 자금 압박 완화</div>
+                  <div class="item"><b>기술</b> 전환 투자 대응</div>
+                  <div class="item"><b>시장</b> 판로 확보 지원</div>
+                  <div class="item"><b>지역</b> 산업 생태계 강화</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span><b>천안시 기업지원정책</b> · 정책 추진 배경</span><span>2 / 6</span></div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="주요 지원내용">
+      <div class="slide-inner">
+        <div class="split">
+          <div class="left">
+            <div class="eyebrow">03 PROGRAMS</div>
+            <h2>주요 지원내용</h2>
+            <p class="lead">천안시 기업지원정책은 기업의 상황에 따라 여러 유형의 지원을 제공합니다. 아래 항목을 클릭하면 핵심 설명을 확인할 수 있습니다.</p>
+            <div class="policy-grid" id="policyButtons">
+              <button type="button" class="policy-btn active" data-key="fund" aria-pressed="true"><strong>자금 지원</strong><span>운전자금·이차보전 등 경영 부담 완화</span></button>
+              <button type="button" class="policy-btn" data-key="market" aria-pressed="false"><strong>판로 지원</strong><span>전시회·마케팅·브랜드 홍보 지원</span></button>
+              <button type="button" class="policy-btn" data-key="tech" aria-pressed="false"><strong>기술 지원</strong><span>R&D, 장비, 인증, 고도화 지원</span></button>
+              <button type="button" class="policy-btn" data-key="manage" aria-pressed="false"><strong>경영 지원</strong><span>컨설팅·교육·인력 역량 지원</span></button>
+            </div>
+            <div class="policy-detail" id="policyDetail">
+              <h3>자금 지원</h3>
+              <p>기업 운영에 필요한 자금 조달 부담을 줄이기 위한 지원입니다. 금리 부담 경감, 경영안정 도모, 초기 투자 완화에 도움이 됩니다.</p>
+            </div>
+            <div class="summary"><strong>핵심 요약</strong> · 자금·판로·기술·경영 지원은 서로 연결되어 있으며, 기업 수요에 따라 조합해서 활용할 수 있습니다.</div>
+          </div>
+          <div class="right">
+            <div class="media">
+              <div class="media-title"><span class="badge">4대 지원영역</span><b>기업 수요 중심 지원 체계</b><span>클릭한 항목에 따라 내용 이해</span></div>
+              <svg viewBox="0 0 1000 700" aria-hidden="true">
+                <circle cx="500" cy="350" r="112" fill="#ffffff" stroke="#dce6db" stroke-width="10"/>
+                <circle cx="500" cy="350" r="78" fill="#edf5ed"/>
+                <text x="500" y="338" text-anchor="middle" fill="#184e3c" font-size="34" font-weight="700">기업</text>
+                <text x="500" y="382" text-anchor="middle" fill="#184e3c" font-size="34" font-weight="700">성장</text>
+                <g class="float"><rect x="180" y="120" width="220" height="120" rx="26" fill="#ffffff" stroke="#dce5dc" stroke-width="6"/><text x="290" y="174" text-anchor="middle" fill="#184e3c" font-size="34" font-weight="700">자금</text><text x="290" y="212" text-anchor="middle" fill="#68746e" font-size="22">부담 완화</text></g>
+                <g class="float2"><rect x="600" y="120" width="220" height="120" rx="26" fill="#ffffff" stroke="#dce5dc" stroke-width="6"/><text x="710" y="174" text-anchor="middle" fill="#184e3c" font-size="34" font-weight="700">판로</text><text x="710" y="212" text-anchor="middle" fill="#68746e" font-size="22">시장 확대</text></g>
+                <g class="float"><rect x="180" y="470" width="220" height="120" rx="26" fill="#ffffff" stroke="#dce5dc" stroke-width="6"/><text x="290" y="524" text-anchor="middle" fill="#184e3c" font-size="34" font-weight="700">기술</text><text x="290" y="562" text-anchor="middle" fill="#68746e" font-size="22">고도화 지원</text></g>
+                <g class="float2"><rect x="600" y="470" width="220" height="120" rx="26" fill="#ffffff" stroke="#dce5dc" stroke-width="6"/><text x="710" y="524" text-anchor="middle" fill="#184e3c" font-size="34" font-weight="700">경영</text><text x="710" y="562" text-anchor="middle" fill="#68746e" font-size="22">역량 강화</text></g>
+                <g stroke="#c86734" stroke-width="8" stroke-linecap="round"><path d="M405 230 L455 282"/><path d="M595 230 L545 282"/><path d="M405 470 L455 418"/><path d="M595 470 L545 418"/></g>
+              </svg>
+              <div class="glass">
+                <h3>한눈에 보는 구조</h3>
+                <p>오른쪽 패널은 4대 지원영역의 구조를 보여줍니다. 왼쪽에서 원하는 지원 항목을 클릭해 세부 설명을 학습할 수 있습니다.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span><b>천안시 기업지원정책</b> · 주요 지원내용</span><span>3 / 6</span></div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="기업 혜택">
+      <div class="slide-inner">
+        <div class="split">
+          <div class="left">
+            <div class="eyebrow">04 BENEFITS</div>
+            <h2>기업에게 제공되는 혜택</h2>
+            <p class="lead">기업지원정책은 단순히 한 번의 지원으로 끝나지 않습니다. 기업 운영 전반의 부담을 덜고 성장 기회를 넓히는 실질적 효과를 제공합니다.</p>
+            <div class="grid-2">
+              <div class="compare-col">
+                <h3>지원 전</h3>
+                <ul>
+                  <li>운영자금 확보 부담</li>
+                  <li>신규 판로 개척 어려움</li>
+                  <li>기술개선 투자 부담</li>
+                  <li>경영 전문성 부족</li>
+                </ul>
+              </div>
+              <div class="compare-col">
+                <h3>지원 후</h3>
+                <ul>
+                  <li>비용 부담 완화</li>
+                  <li>시장 접근 기회 확대</li>
+                  <li>제품·기술 경쟁력 향상</li>
+                  <li>경영 역량 강화</li>
+                </ul>
+              </div>
+            </div>
+            <div class="process">
+              <div class="step"><strong>STEP 1</strong><span>부담 완화</span><div class="mini-note">자금·비용 부담 경감</div></div>
+              <div class="step"><strong>STEP 2</strong><span>기회 확대</span><div class="mini-note">판로·투자·협력 기회 확보</div></div>
+              <div class="step"><strong>STEP 3</strong><span>성장 가속</span><div class="mini-note">경쟁력 강화와 지속 성장 기반 마련</div></div>
+            </div>
+            <div class="summary"><strong>핵심 요약</strong> · 정책 혜택은 비용 절감에 그치지 않고, 기업의 시장 확대와 경쟁력 향상으로 이어집니다.</div>
+          </div>
+          <div class="right">
+            <div class="media">
+              <div class="media-title"><span class="badge">지원 효과</span><b>부담 완화에서 성장까지</b><span>지원 전 · 지원 후 변화</span></div>
+              <div class="soft-circle float2" style="width:180px;height:180px;left:36px;top:34px"></div>
+              <div class="soft-circle float" style="width:120px;height:120px;right:34px;bottom:120px"></div>
+              <svg viewBox="0 0 1000 700" aria-hidden="true">
+                <rect x="130" y="170" width="260" height="340" rx="28" fill="#ffffff" stroke="#dce6dc" stroke-width="8"/>
+                <rect x="610" y="170" width="260" height="340" rx="28" fill="#ffffff" stroke="#dce6dc" stroke-width="8"/>
+                <text x="260" y="230" text-anchor="middle" fill="#184e3c" font-size="34" font-weight="700">지원 전</text>
+                <text x="740" y="230" text-anchor="middle" fill="#184e3c" font-size="34" font-weight="700">지원 후</text>
+                <g fill="#6e7b74" font-size="22">
+                  <text x="182" y="290">• 비용 부담 큼</text>
+                  <text x="182" y="338">• 시장 진입 제한</text>
+                  <text x="182" y="386">• 기술투자 신중</text>
+                  <text x="182" y="434">• 성장 속도 둔화</text>
+                  <text x="652" y="290">• 자금 여력 확보</text>
+                  <text x="652" y="338">• 판로 접근 확대</text>
+                  <text x="652" y="386">• 기술 고도화 가능</text>
+                  <text x="652" y="434">• 성장 기반 강화</text>
+                </g>
+                <path d="M430 340 H570" fill="none" stroke="#c86734" stroke-width="18" stroke-linecap="round"/>
+                <path d="M540 300 L610 340 L540 380" fill="none" stroke="#c86734" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div class="glass">
+                <h3>기업 체감 포인트</h3>
+                <p>자금 부담 완화 → 투자 여력 확보 → 시장 확대 → 경쟁력 강화의 흐름으로 이해하면 쉽습니다.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span><b>천안시 기업지원정책</b> · 기업 혜택</span><span>4 / 6</span></div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="기대효과">
+      <div class="slide-inner">
+        <div class="split">
+          <div class="left">
+            <div class="eyebrow">05 IMPACT</div>
+            <h2>기대효과</h2>
+            <p class="lead">기업지원정책이 안정적으로 운영되면 개별 기업의 성장뿐 아니라 지역 산업 생태계 전반에도 긍정적인 파급효과가 발생합니다.</p>
+            <div class="kpi-grid">
+              <div class="kpi"><strong>EFFECT 1</strong><b>기업 경쟁력 강화</b><span>기술, 품질, 브랜드 역량이 높아져 시장 대응력이 향상됩니다.</span></div>
+              <div class="kpi"><strong>EFFECT 2</strong><b>지역경제 활성화</b><span>매출 확대와 생산 증가가 지역경제 순환에 긍정적으로 작용합니다.</span></div>
+              <div class="kpi"><strong>EFFECT 3</strong><b>일자리 창출 기반</b><span>기업 성장에 따라 고용 여력과 인력 수요가 늘어날 수 있습니다.</span></div>
+              <div class="kpi"><strong>EFFECT 4</strong><b>산업 생태계 강화</b><span>기업·기관·지역사회 간 협력 기반이 확대됩니다.</span></div>
+            </div>
+            <div class="summary"><strong>핵심 요약</strong> · 기업지원정책의 궁극적 목표는 기업의 지속 성장과 지역 산업 경쟁력의 동시 강화입니다.</div>
+          </div>
+          <div class="right">
+            <div class="media">
+              <div class="media-title"><span class="badge">기대효과</span><b>기업 성장 → 지역 확산</b><span>파급효과 흐름 시각화</span></div>
+              <svg viewBox="0 0 1000 700" aria-hidden="true">
+                <g opacity="0.2">
+                  <circle cx="210" cy="470" r="76" fill="#cfe0d2"/>
+                  <circle cx="785" cy="200" r="98" fill="#dceadf"/>
+                </g>
+                <g>
+                  <rect x="140" y="420" width="120" height="110" rx="18" fill="#bad2c1"/>
+                  <rect x="292" y="356" width="120" height="174" rx="18" fill="#94b8a0"/>
+                  <rect x="444" y="296" width="120" height="234" rx="18" fill="#72a287"/>
+                  <rect x="596" y="216" width="120" height="314" rx="18" fill="#4c7f64"/>
+                  <rect x="748" y="146" width="120" height="384" rx="18" fill="#275d47"/>
+                </g>
+                <path d="M168 388 C290 360, 381 294, 490 256 S681 182, 818 116" fill="none" stroke="#c86734" stroke-width="16" stroke-linecap="round"/>
+                <g fill="#c86734"><circle cx="168" cy="388" r="11"/><circle cx="490" cy="256" r="11"/><circle cx="818" cy="116" r="11"/></g>
+                <g fill="#184e3c" font-size="24" font-weight="700">
+                  <text x="146" y="576">기업 역량</text>
+                  <text x="308" y="576">시장 확대</text>
+                  <text x="452" y="576">매출 성장</text>
+                  <text x="618" y="576">고용 기반</text>
+                  <text x="752" y="576">지역 활성화</text>
+                </g>
+              </svg>
+              <div class="glass">
+                <h3>연결 구조 이해하기</h3>
+                <p>정책의 효과는 개별 기업을 넘어 매출 확대, 고용 기반 강화, 지역경제 활성화로 확산되는 구조입니다.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span><b>천안시 기업지원정책</b> · 기대효과</span><span>5 / 6</span></div>
+      </div>
+    </section>
+
+    <section class="slide" data-title="정리">
+      <div class="slide-inner">
+        <div class="split">
+          <div class="left">
+            <div class="eyebrow">06 SUMMARY</div>
+            <h2>핵심 정리</h2>
+            <p class="lead">마지막으로 정책 구조를 다시 확인하고, 간단한 퀴즈로 이해도를 점검해보세요.</p>
+            <ul class="bullets">
+              <li><span class="dot"></span><p>천안시 기업지원정책은 <strong>기업 성장과 지역경제 활성화</strong>를 함께 목표로 합니다.</p></li>
+              <li><span class="dot"></span><p>지원 영역은 <strong>자금·판로·기술·경영</strong>의 4가지 축으로 이해하면 쉽습니다.</p></li>
+              <li><span class="dot"></span><p>정책 혜택은 <strong>비용 절감, 시장 확대, 경쟁력 향상</strong>으로 연결됩니다.</p></li>
+              <li><span class="dot"></span><p>기업별 상황에 맞는 제도를 선택하는 것이 효과적인 활용의 핵심입니다.</p></li>
+            </ul>
+            <div class="quiz" id="quizArea">
+              <button type="button" data-answer="wrong">천안시 기업지원정책은 판로 지원만을 위한 제도이다.</button>
+              <button type="button" data-answer="correct">천안시 기업지원정책은 자금·판로·기술·경영 지원을 종합적으로 이해하면 된다.</button>
+              <button type="button" data-answer="wrong">기업지원정책의 목표는 기업과 무관하게 행사성 지원을 늘리는 것이다.</button>
+            </div>
+            <div class="quiz-result" id="quizResult">정답이라고 생각하는 문장을 클릭해보세요.</div>
+            <div class="summary"><strong>핵심 요약</strong> · 정책의 구조를 이해하고 기업 상황에 맞게 연결하면, 지원제도를 더 효율적으로 설명하고 활용할 수 있습니다.</div>
+          </div>
+          <div class="right">
+            <div class="media">
+              <div class="media-title"><span class="badge">학습 정리</span><b>핵심 개념 다시 보기</b><span>체크리스트 + 이해 점검</span></div>
+              <div class="soft-square float" style="width:270px;height:168px;left:30px;top:92px"></div>
+              <div class="soft-square float2" style="width:230px;height:154px;right:34px;bottom:110px"></div>
+              <svg viewBox="0 0 1000 700" aria-hidden="true">
+                <rect x="180" y="140" width="640" height="390" rx="32" fill="#ffffff" stroke="#dce6dc" stroke-width="8"/>
+                <g fill="#184e3c" font-size="30" font-weight="700">
+                  <text x="240" y="220">✓  정책 목적 이해</text>
+                  <text x="240" y="300">✓  4대 지원영역 정리</text>
+                  <text x="240" y="380">✓  기업 혜택 연결</text>
+                  <text x="240" y="460">✓  기대효과 설명</text>
+                </g>
+                <circle cx="740" cy="224" r="28" fill="#edf5ed" stroke="#88ae96" stroke-width="7"/>
+                <circle cx="740" cy="304" r="28" fill="#edf5ed" stroke="#88ae96" stroke-width="7"/>
+                <circle cx="740" cy="384" r="28" fill="#edf5ed" stroke="#88ae96" stroke-width="7"/>
+                <circle cx="740" cy="464" r="28" fill="#edf5ed" stroke="#88ae96" stroke-width="7"/>
+              </svg>
+              <div class="glass">
+                <h3>마무리 포인트</h3>
+                <p>정책 설명 시에는 “배경 → 지원내용 → 기업 혜택 → 기대효과” 흐름으로 전달하면 이해가 쉽습니다.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span><b>천안시 기업지원정책</b> · 정리 및 확인</span><span>6 / 6</span></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="bottombar">
+    <div class="navdots" id="navDots"></div>
+    <div class="actions">
+      <button type="button" id="homeBtn">처음으로</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const slides = [...document.querySelectorAll('.slide')];
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const homeBtn = document.getElementById('homeBtn');
+const fullscreenBtn = document.getElementById('fullscreenBtn');
+const printBtn = document.getElementById('printBtn');
+const navDots = document.getElementById('navDots');
+let current = 0;
+
+slides.forEach((slide, i)=>{
+  const btn = document.createElement('button');
+  btn.type='button';
+  btn.textContent = `${i+1}. ${slide.dataset.title}`;
+  btn.addEventListener('click', ()=>showSlide(i));
+  navDots.appendChild(btn);
+});
+function syncDots(){
+  [...navDots.children].forEach((btn,i)=> btn.classList.toggle('active', i===current));
+  prevBtn.disabled = current===0;
+  nextBtn.disabled = current===slides.length-1;
+}
+function showSlide(index){
+  current = Math.max(0, Math.min(index, slides.length-1));
+  slides.forEach((s,i)=>s.classList.toggle('active', i===current));
+  syncDots();
+}
+prevBtn.addEventListener('click', ()=>showSlide(current-1));
+nextBtn.addEventListener('click', ()=>showSlide(current+1));
+homeBtn.addEventListener('click', ()=>showSlide(0));
+document.addEventListener('keydown', (e)=>{
+  if(['ArrowRight','PageDown'].includes(e.key)) showSlide(current+1);
+  if(['ArrowLeft','PageUp'].includes(e.key)) showSlide(current-1);
+  if(e.key === 'Home') showSlide(0);
+});
+fullscreenBtn.addEventListener('click', ()=>{ if(!document.fullscreenElement){ document.documentElement.requestFullscreen?.(); } else { document.exitFullscreen?.(); } });
+printBtn.addEventListener('click', ()=>window.print());
+syncDots();
+
+const policyData = {
+  fund: {
+    title: '자금 지원',
+    text: '기업 운영에 필요한 자금 부담을 줄이기 위한 지원입니다. 운전자금, 이차보전, 경영안정 목적의 지원을 통해 기업의 현금흐름 안정과 투자 여력 확보에 도움을 줍니다.'
+  },
+  market: {
+    title: '판로 지원',
+    text: '전시회, 마케팅, 온라인 홍보, 브랜드 확산 등 시장 진입과 고객 접점 확대를 돕는 지원입니다. 신규 거래처 발굴과 제품 홍보에 유리합니다.'
+  },
+  tech: {
+    title: '기술 지원',
+    text: '연구개발, 기술 고도화, 시제품, 장비 활용, 인증 획득 등 기술 경쟁력을 높이는 데 초점을 둡니다. 제품 품질과 혁신 역량 강화에 연결됩니다.'
+  },
+  manage: {
+    title: '경영 지원',
+    text: '컨설팅, 교육, 조직 운영, 인력 역량 강화와 같이 기업 운영 전반의 체계를 다지는 지원입니다. 장기적으로 안정적인 성장 기반을 마련하는 데 도움이 됩니다.'
+  }
+};
+const detail = document.getElementById('policyDetail');
+document.querySelectorAll('.policy-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.policy-btn').forEach(b=>{b.classList.remove('active'); b.setAttribute('aria-pressed','false');});
+    btn.classList.add('active');
+    btn.setAttribute('aria-pressed','true');
+    const data = policyData[btn.dataset.key];
+    detail.innerHTML = `<h3>${data.title}</h3><p>${data.text}</p>`;
+  });
+});
+
+const quizResult = document.getElementById('quizResult');
+document.querySelectorAll('#quizArea button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#quizArea button').forEach(b=>b.classList.remove('correct','wrong'));
+    const isCorrect = btn.dataset.answer === 'correct';
+    btn.classList.add(isCorrect ? 'correct' : 'wrong');
+    quizResult.textContent = isCorrect
+      ? '정답입니다. 천안시 기업지원정책은 자금·판로·기술·경영을 종합적으로 이해하는 것이 핵심입니다.'
+      : '다시 확인해보세요. 기업지원정책은 특정 한 분야만이 아니라 여러 지원영역을 아우르는 종합 지원정책입니다.';
+  });
+});
+</script>
+</body>
+</html>
